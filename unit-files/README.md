@@ -37,3 +37,9 @@ Stop service.
 ```bash
 systemctl stop name.service
 ```
+
+Check logs.
+
+```bash
+journalctl -u name.service -f
+```
