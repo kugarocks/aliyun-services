@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"path/filepath"
-	"strings"
 )
 
 const (
@@ -25,7 +23,7 @@ const (
 type GitHubWebhookPayload struct {
 	Action string `json:"action"`
 	Branch string `json:"ref"`
-	Path   string `json:"path"`
+	Repo   string `json:"repo"`
 }
 
 type WebhookResponse struct {
@@ -34,29 +32,22 @@ type WebhookResponse struct {
 }
 
 var (
-	allowedPaths    []string
 	allowedBranches []string
+	repoPathMap     map[string]string
 )
 
 func init() {
-	allowedPaths = []string{
-		"",
-	}
 	allowedBranches = []string{
 		"main",
 		"gh-pages",
 		"cf-pages",
 		"al-pages",
 	}
-}
 
-func isAllowedPath(path string) bool {
-	for _, allowedPath := range allowedPaths {
-		if strings.HasPrefix(path, allowedPath) {
-			return true
-		}
+	repoPathMap = map[string]string{
+		"repo1": "/path/to/repo1",
+		"repo2": "/path/to/repo2",
 	}
-	return false
 }
 
 func isAllowedBranch(branch string) bool {
@@ -92,24 +83,19 @@ func pullBranch(branch, path string) error {
 
 func handleGitPull(payload GitHubWebhookPayload) error {
 	branch := payload.Branch
-	path := payload.Path
+	repo := payload.Repo
 
-	if branch == "" || path == "" {
+	if branch == "" || repo == "" {
 		return fmt.Errorf("missing required parameters")
-	}
-
-	if !isAllowedPath(path) {
-		return fmt.Errorf("path is not in the allowed list: %s", path)
 	}
 
 	if !isAllowedBranch(branch) {
 		return fmt.Errorf("branch is not in the allowed list: %s", branch)
 	}
 
-	// Ensure the path is absolute
-	absPath, err := filepath.Abs(path)
-	if err != nil {
-		return fmt.Errorf("invalid path: %s", err)
+	absPath, ok := repoPathMap[repo]
+	if !ok {
+		return fmt.Errorf("unknown repository: %s", repo)
 	}
 
 	// Check if the path exists
