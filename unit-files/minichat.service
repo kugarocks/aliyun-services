@@ -1,0 +1,13 @@
+[Unit]
+Description=Mini Chat
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=__EXEC_START__
+Restart=always    # Ensure automatic restart on exit
+RestartSec=5      # Restart interval time (seconds)
+LimitNOFILE=1024  # Set file open limit
+
+[Install]
+WantedBy=multi-user.target
