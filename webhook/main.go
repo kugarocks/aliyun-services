@@ -22,8 +22,8 @@ const (
 
 type GitHubWebhookPayload struct {
 	Action string `json:"action"`
-	Branch string `json:"ref"`
 	Repo   string `json:"repo"`
+	Branch string `json:"branch"`
 }
 
 type WebhookResponse struct {
