@@ -1,0 +1,8 @@
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "git-pull",
+    "ref": "main",
+    "path": ""
+  }' \
+  http://localhost:8080/webhook
