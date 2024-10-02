@@ -3,13 +3,13 @@
 ## Minichat
 
 ```bash
-sed "s/__EXEC_START__/path/g" minichat.service > /etc/systemd/system/minichat.service
+sed "s|__EXEC_START__|path|g" minichat.service > /etc/systemd/system/minichat.service
 ```
 
 ## Webhook
 
 ```bash
-sed "s/__EXEC_START__/path/g" webhook.service > /etc/systemd/system/webhook.service
+sed "s|__EXEC_START__|path|g" webhook.service > /etc/systemd/system/webhook.service
 ```
 
 ## Setup
